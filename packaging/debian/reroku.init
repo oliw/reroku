@@ -21,6 +21,15 @@ stop() {
   log_end_msg $?
 }
 
+status() {
+  reroku_pid=`pgrep -f "$REROKU -d"`
+  if [ -z "$reroku_pid" ] ; then
+    echo "Reroku is not running"
+  else
+    echo "Reroku is running (pid $reroku_pid)"
+  fi
+}
+
 case "$1" in
   start)
     start
@@ -28,13 +37,13 @@ case "$1" in
   stop)
     stop
     ;;
-  uninstall)
-    uninstall
+  status)
+    status
     ;;
   restart)
     stop
     start
     ;;
   *)
-    echo "Usage: $0 {start|stop|restart}"
+    echo "Usage: $0 {start|stop|status|restart}"
 esac
