@@ -10,7 +10,7 @@ LOGFILE=/var/log/reroku.log
 
 start() {
   log_begin_msg "Starting Reroku"
-  start-stop-daemon --start --background --exec "$REROKU" -- -d
+  start-stop-daemon --start --background --exec "$REROKU > $LOGFILE 2>&1" -- -d
   log_end_msg $?
 }
 

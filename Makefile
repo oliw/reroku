@@ -8,6 +8,8 @@ REROKU_MAIN := $(REROKU_DIR)/reroku
 BUILD_DIR := $(REROKU_DIR)/build
 REROKU_BIN := $(BUILD_DIR)/bin/reroku
 
+DEB_PACKAGE_DIR := $(BUILD_DIR)/deb
+
 all: $(REROKU_BIN)
 
 clean:
@@ -18,6 +20,13 @@ $(REROKU_BIN):
 	@(cd $(REROKU_MAIN); go build -o $@)
 
 dpkg: $(REROKU_BIN)
-	mkdir -p $(BUILD_DIR)/deb/reroku/usr/local/bin
-	cp $(REROKU_BIN) $(BUILD_DIR)/deb/reroku/usr/local/bin
-	@(cd $(BUILD_DIR); fpm -s dir -t deb --deb-init $(REROKU_DIR)/packaging/debian/reroku.init -n reroku -v $(VERSION)-$(BUILD) -C deb/reroku .)
+	@# place binary
+	@mkdir -p $(DEB_PACKAGE_DIR)/usr/local/bin
+	@cp $(REROKU_BIN) $(DEB_PACKAGE_DIR)/usr/local/bin
+	@# place logrotation settings
+	@mkdir -p $(DEB_PACKAGE_DIR)/etc/logrotate.d
+	@cp $(REROKU_DIR)/packaging/debian/reroku.logrotate $(DEB_PACKAGE_DIR)/etc/logrotate.d/reroku
+	@# place config settings
+	@mkdir -p $(DEB_PACKAGE_DIR)/etc
+	@cp $(REROKU_DIR)/packaging/debian/reroku.conf $(DEB_PACKAGE_DIR)/etc
+	@(cd $(BUILD_DIR); fpm -s dir -t deb --deb-init $(REROKU_DIR)/packaging/debian/reroku.init -n reroku -v $(VERSION)-$(BUILD) -C $(DEB_PACKAGE_DIR) .)
