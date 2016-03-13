@@ -1,0 +1,40 @@
+#!/bin/sh
+
+REROKU=/usr/local/bin/reroku
+
+PIDFILE=/var/run/reroku.pid
+LOGFILE=/var/log/reroku.log
+
+# Get lsb functions
+. /lib/lsb/init-functions
+
+start() {
+  log_begin_msg "Starting Reroku"
+  start-stop-daemon --start --background --exec "$REROKU" -- -d
+  log_end_msg $?
+}
+
+stop() {
+  log_begin_msg "Stopping Reroku"
+  reroku_pid=`pgrep -f "$REROKU -d"`
+  [ -n "$reroku_pid" ] && kill $reroku_pid
+  log_end_msg $?
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  uninstall)
+    uninstall
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+esac
