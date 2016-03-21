@@ -8,7 +8,7 @@ REROKU_BIN := $(BUILD_DIR)/bin/reroku
 VERSION := $(shell cat VERSION)
 DEB_PACKAGE_DIR := $(BUILD_DIR)/deb
 
-BUILD_OPTIONS = -ldflags "-X github.com/oliw/reroku/server.VERSION $(VERSION)"
+BUILD_OPTIONS = -ldflags "-X github.com/oliw/reroku/server.VERSION $(VERSION) -X github.com/oliw/reroku/client.VERSION $(VERSION)"
 
 all: $(REROKU_BIN)
 
