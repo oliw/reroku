@@ -1,14 +1,24 @@
 package daemon
 
 import (
-	"fmt"
 	log "github.com/Sirupsen/logrus"
-	"time"
+	"github.com/oliw/reroku/server"
 )
 
-func Start() {
+func Start() error {
 	log.Info("Starting daemon")
-	for x := range time.Tick(3 * time.Second) {
-		fmt.Printf("Daemon is running %d\n", x)
+	srv, err := server.NewServer()
+	if err != nil {
+		return err
 	}
+
+	address := ""
+	address += server.DEFAULTHTTPHOST
+	address += ":"
+	address += server.DEFAULTHTTPPORT
+	err = server.ListenAndServe("tcp", address, srv)
+	if err != nil {
+		return err
+	}
+	return nil
 }
